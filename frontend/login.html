@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ParkSmart | Welcome</title>
+  <style>
+    :root {
+      --navy: #0f172a;
+      --navy-soft: #17233d;
+      --navy-light: #223250;
+      --orange: #f97316;
+      --orange-bright: #fb923c;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: rgba(148, 163, 184, 0.2);
+      --error: #fda4af;
+      --success: #86efac;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      color: var(--text);
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(249, 115, 22, 0.15), transparent 28%),
+        linear-gradient(135deg, #0f172a 0%, #111c34 56%, #0b1120 100%);
+    }
+
+    .card {
+      width: min(100%, 440px);
+      padding: 38px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(23, 35, 61, 0.94);
+      box-shadow: 0 24px 70px rgba(2, 6, 23, 0.45);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: var(--navy);
+      font-size: 20px;
+      font-weight: 900;
+      background: var(--orange);
+    }
+
+    .brand-name {
+      margin: 0;
+      font-size: 21px;
+      letter-spacing: 0.02em;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--orange-bright);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 6vw, 38px);
+      line-height: 1.1;
+    }
+
+    .intro {
+      margin: 12px 0 28px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      margin-bottom: 26px;
+      padding: 4px;
+      border-radius: 10px;
+      background: var(--navy);
+    }
+
+    .tab {
+      padding: 11px 12px;
+      border: 0;
+      border-radius: 7px;
+      color: var(--muted);
+      font: inherit;
+      font-weight: 700;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .tab[aria-selected="true"] {
+      color: var(--text);
+      background: var(--navy-light);
+      box-shadow: 0 3px 10px rgba(2, 6, 23, 0.25);
+    }
+
+    form {
+      display: grid;
+      gap: 17px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    label {
+      color: #cbd5e1;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: 0;
+      color: var(--text);
+      font: inherit;
+      background: rgba(15, 23, 42, 0.7);
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    input:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18);
+    }
+
+    .submit {
+      margin-top: 5px;
+      padding: 14px 16px;
+      border: 0;
+      border-radius: 8px;
+      color: var(--navy);
+      font: inherit;
+      font-weight: 800;
+      background: var(--orange);
+      cursor: pointer;
+      transition: background 160ms ease, transform 160ms ease;
+    }
+
+    .submit:hover {
+      background: var(--orange-bright);
+      transform: translateY(-1px);
+    }
+
+    .submit:disabled {
+      cursor: wait;
+      opacity: 0.65;
+      transform: none;
+    }
+
+    .message {
+      min-height: 20px;
+      margin: 16px 0 0;
+      color: var(--error);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .message.success {
+      color: var(--success);
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 28px 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">P</div>
+      <p class="brand-name">ParkSmart</p>
+    </div>
+
+    <p class="eyebrow">Garage attendant portal</p>
+    <h1 id="heading">Welcome back</h1>
+    <p class="intro" id="intro">Sign in to manage vehicles, spots, and parking sessions.</p>
+
+    <div class="tabs" role="tablist" aria-label="Account access">
+      <button class="tab" id="login-tab" type="button" role="tab" aria-selected="true" aria-controls="login-panel">Login</button>
+      <button class="tab" id="register-tab" type="button" role="tab" aria-selected="false" aria-controls="register-panel">Register</button>
+    </div>
+
+    <section id="login-panel" role="tabpanel" aria-labelledby="login-tab">
+      <form id="login-form">
+        <div class="field">
+          <label for="login-username">Username</label>
+          <input id="login-username" name="username" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <button class="submit" type="submit">Sign in</button>
+      </form>
+    </section>
+
+    <section id="register-panel" role="tabpanel" aria-labelledby="register-tab" hidden>
+      <form id="register-form">
+        <div class="field">
+          <label for="register-username">Username</label>
+          <input id="register-username" name="username" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="register-email">Email</label>
+          <input id="register-email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="register-password">Password</label>
+          <input id="register-password" name="password" type="password" minlength="8" autocomplete="new-password" required>
+        </div>
+        <button class="submit" type="submit">Create account</button>
+      </form>
+    </section>
+
+    <p class="message" id="message" role="status" aria-live="polite"></p>
+  </main>
+
+  <script>
+    const API_BASE_URL = "https://improved-succotash-7v4j4xg4xxqx2995-8000.app.github.dev";
+    const loginTab = document.getElementById("login-tab");
+    const registerTab = document.getElementById("register-tab");
+    const loginPanel = document.getElementById("login-panel");
+    const registerPanel = document.getElementById("register-panel");
+    const loginForm = document.getElementById("login-form");
+    const registerForm = document.getElementById("register-form");
+    const message = document.getElementById("message");
+    const heading = document.getElementById("heading");
+    const intro = document.getElementById("intro");
+
+    function setMessage(text, success = false) {
+      message.textContent = text;
+      message.classList.toggle("success", success);
+    }
+
+    function setTab(tab) {
+      const loginSelected = tab === "login";
+      loginTab.setAttribute("aria-selected", String(loginSelected));
+      registerTab.setAttribute("aria-selected", String(!loginSelected));
+      loginPanel.hidden = !loginSelected;
+      registerPanel.hidden = loginSelected;
+      heading.textContent = loginSelected ? "Welcome back" : "Create your account";
+      intro.textContent = loginSelected
+        ? "Sign in to manage vehicles, spots, and parking sessions."
+        : "Set up access to your garage operations dashboard.";
+      setMessage("");
+    }
+
+    function errorDetail(payload, fallback) {
+      if (payload && typeof payload.detail === "string") {
+        return payload.detail;
+      }
+      return fallback;
+    }
+
+    async function postJson(path, data) {
+      const response = await fetch(`${API_BASE_URL}${path}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(errorDetail(payload, "Something went wrong. Please try again."));
+      }
+      return payload;
+    }
+
+    async function login(username, password) {
+      const result = await postJson("/auth/login", { username, password });
+      localStorage.setItem("token", result.token);
+      localStorage.setItem("username", result.username);
+      window.location.href = "app.html";
+    }
+
+    loginTab.addEventListener("click", () => setTab("login"));
+    registerTab.addEventListener("click", () => setTab("register"));
+
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const button = loginForm.querySelector("button");
+      button.disabled = true;
+      setMessage("");
+      try {
+        const form = new FormData(loginForm);
+        await login(form.get("username"), form.get("password"));
+      } catch (error) {
+        setMessage(error.message);
+        button.disabled = false;
+      }
+    });
+
+    registerForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const button = registerForm.querySelector("button");
+      button.disabled = true;
+      setMessage("");
+      try {
+        const form = new FormData(registerForm);
+        const username = form.get("username");
+        const password = form.get("password");
+        await postJson("/auth/register", {
+          username,
+          email: form.get("email"),
+          password
+        });
+        setMessage("Account created. Signing you in...", true);
+        await login(username, password);
+      } catch (error) {
+        setMessage(error.message);
+        button.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

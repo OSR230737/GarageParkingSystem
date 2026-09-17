@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ParkSmart | Dashboard</title>
+  <style>
+    :root {
+      --navy: #0f172a;
+      --navy-soft: #17233d;
+      --navy-light: #223250;
+      --orange: #f97316;
+      --orange-bright: #fb923c;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --subtle: #cbd5e1;
+      --border: rgba(148, 163, 184, 0.18);
+      --green: #22c55e;
+      --red: #ef4444;
+      --blue: #38bdf8;
+      --purple: #a78bfa;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      margin: 0;
+      color: var(--text);
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 90% 0%, rgba(249, 115, 22, 0.12), transparent 25%),
+        linear-gradient(145deg, #0f172a 0%, #111c34 60%, #0b1120 100%);
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .shell {
+      width: min(1440px, 100%);
+      margin: 0 auto;
+      padding: 0 28px 42px;
+    }
+
+    .navbar {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand, .account { display: flex; align-items: center; gap: 12px; }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      color: var(--navy);
+      font-weight: 900;
+      background: var(--orange);
+    }
+    .brand-name { margin: 0; font-size: 20px; font-weight: 800; letter-spacing: .02em; }
+    .welcome { color: var(--subtle); font-size: 14px; }
+    .logout {
+      padding: 8px 13px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--subtle);
+      background: transparent;
+      font-size: 13px;
+    }
+    .logout:hover { color: var(--text); border-color: var(--orange); }
+
+    .hero {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 34px 0 26px;
+    }
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--orange-bright);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); line-height: 1.05; }
+    .hero-copy { margin: 10px 0 0; color: var(--muted); }
+    .refresh-note { color: var(--muted); font-size: 12px; white-space: nowrap; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+    .stat {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(23, 35, 61, .76);
+    }
+    .stat-label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+    .stat-value { display: block; margin-top: 7px; font-size: 30px; font-weight: 800; }
+    .stat-value.orange { color: var(--orange-bright); }
+    .stat-value.blue { color: var(--blue); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(23, 35, 61, .8);
+    }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-title { margin: 0; font-size: 17px; }
+    .panel-body { padding: 20px; }
+
+    .checkin-panel { position: sticky; top: 18px; }
+    form { display: grid; gap: 16px; }
+    .field { display: grid; gap: 8px; }
+    label { color: var(--subtle); font-size: 13px; font-weight: 700; }
+    input, select {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      outline: none;
+      color: var(--text);
+      background: rgba(15, 23, 42, .8);
+    }
+    input:focus, select:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(249, 115, 22, .15); }
+    select option { color: var(--text); background: var(--navy); }
+    .primary {
+      padding: 13px 16px;
+      border: 0;
+      border-radius: 7px;
+      color: var(--navy);
+      font-weight: 800;
+      background: var(--orange);
+    }
+    .primary:hover { background: var(--orange-bright); }
+    .primary:disabled { opacity: .6; cursor: wait; }
+    .message { min-height: 20px; margin: 0; color: #fda4af; font-size: 13px; line-height: 1.45; }
+    .message.success { color: #86efac; }
+
+    .main-column { display: grid; gap: 18px; min-width: 0; }
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .toolbar-controls { display: flex; gap: 9px; flex-wrap: wrap; }
+    .toolbar input { width: min(240px, 100%); }
+    .compact-select { width: auto; min-width: 155px; padding: 9px 10px; }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 720px; }
+    th, td { padding: 13px 20px; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+    th { color: var(--muted); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+    td { color: var(--subtle); font-size: 13px; }
+    tbody tr:last-child td { border-bottom: 0; }
+    .plate { color: var(--text); font-weight: 800; }
+    .type { color: var(--orange-bright); text-transform: capitalize; }
+    .checkout {
+      padding: 7px 10px;
+      border: 1px solid rgba(249, 115, 22, .55);
+      border-radius: 6px;
+      color: var(--orange-bright);
+      background: transparent;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .checkout:hover { color: var(--navy); background: var(--orange); }
+    .empty { padding: 28px 20px; color: var(--muted); text-align: center; }
+    .pagination { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 15px 20px; border-top: 1px solid var(--border); }
+    .pagination button { padding: 7px 11px; border: 1px solid var(--border); border-radius: 6px; color: var(--subtle); background: transparent; }
+    .pagination button:hover:not(:disabled) { border-color: var(--orange); color: var(--text); }
+    .pagination button:disabled { cursor: not-allowed; opacity: .35; }
+    .page-label { color: var(--muted); font-size: 13px; }
+
+    .filters { display: flex; gap: 7px; flex-wrap: wrap; }
+    .filter {
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      background: transparent;
+      font-size: 12px;
+    }
+    .filter.active, .filter:hover { border-color: var(--orange); color: var(--text); background: rgba(249, 115, 22, .11); }
+    .spot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 10px; }
+    .spot-card {
+      min-height: 78px;
+      display: grid;
+      align-content: center;
+      gap: 5px;
+      padding: 12px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      color: var(--text);
+    }
+    .spot-card.free-standard { border-color: rgba(34, 197, 94, .45); background: rgba(34, 197, 94, .13); }
+    .spot-card.occupied-standard { border-color: rgba(239, 68, 68, .45); background: rgba(239, 68, 68, .13); }
+    .spot-card.free-ev { border-color: rgba(56, 189, 248, .5); background: rgba(56, 189, 248, .13); }
+    .spot-card.occupied-ev { border-color: rgba(167, 139, 250, .5); background: rgba(167, 139, 250, .14); }
+    .spot-number { font-size: 17px; font-weight: 800; }
+    .spot-meta { color: var(--subtle); font-size: 11px; text-transform: capitalize; }
+    .loading { color: var(--muted); font-size: 13px; }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .checkin-panel { position: static; }
+    }
+    @media (max-width: 640px) {
+      .shell { padding: 0 16px 30px; }
+      .navbar { min-height: 68px; }
+      .welcome { display: none; }
+      .hero { display: block; padding-top: 28px; }
+      .refresh-note { display: block; margin-top: 12px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .stat { padding: 15px; }
+      .stat-value { font-size: 25px; }
+      .panel-header, .panel-body { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <nav class="navbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">P</div>
+        <p class="brand-name">ParkSmart</p>
+      </div>
+      <div class="account">
+        <span class="welcome">Welcome <strong id="username">Attendant</strong></span>
+        <button class="logout" id="logout" type="button">Log out</button>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Garage operations</p>
+        <h1>Today at a glance</h1>
+        <p class="hero-copy">Keep arrivals moving and every spot accounted for.</p>
+      </div>
+      <span class="refresh-note">Live capacity refreshes every 30 seconds</span>
+    </header>
+
+    <section class="stats" aria-label="Garage statistics">
+      <article class="stat"><span class="stat-label">Total spots</span><strong class="stat-value" id="total-spots">--</strong></article>
+      <article class="stat"><span class="stat-label">Occupied</span><strong class="stat-value orange" id="occupied-spots">--</strong></article>
+      <article class="stat"><span class="stat-label">Free spots</span><strong class="stat-value" id="free-spots">--</strong></article>
+      <article class="stat"><span class="stat-label">Free EV spots</span><strong class="stat-value blue" id="free-ev-spots">--</strong></article>
+    </section>
+
+    <div class="layout">
+      <aside class="panel checkin-panel">
+        <div class="panel-header"><h2 class="panel-title">Check in vehicle</h2></div>
+        <div class="panel-body">
+          <form id="checkin-form">
+            <div class="field">
+              <label for="plate-number">Plate number</label>
+              <input id="plate-number" name="plate_number" placeholder="e.g. ABC-123" autocomplete="off" required>
+            </div>
+            <div class="field">
+              <label for="vehicle-type">Vehicle type</label>
+              <select id="vehicle-type" name="vehicle_type">
+                <option value="regular">Regular</option>
+                <option value="ev">EV</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="spot-id">Available spot</label>
+              <select id="spot-id" name="spot_id" required>
+                <option value="">Loading spots...</option>
+              </select>
+            </div>
+            <button class="primary" type="submit">Check in</button>
+            <p class="message" id="checkin-message" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </aside>
+
+      <main class="main-column">
+        <section class="panel">
+          <div class="panel-header toolbar">
+            <h2 class="panel-title">Active sessions</h2>
+            <div class="toolbar-controls">
+              <input id="search" type="search" placeholder="Search plate..." aria-label="Search by plate">
+              <select id="sort" class="compact-select" aria-label="Sort active sessions">
+                <option value="checked_in_at">Latest check-in</option>
+                <option value="plate_number">Plate number</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Plate</th><th>Spot</th><th>Floor</th><th>Type</th><th>Checked in</th><th>Duration</th><th>Action</th></tr>
+              </thead>
+              <tbody id="sessions-body"><tr><td class="empty" colspan="7">Loading sessions...</td></tr></tbody>
+            </table>
+          </div>
+          <div class="pagination">
+            <button id="previous-page" type="button">Previous</button>
+            <span class="page-label" id="page-label">Page 1 of 1</span>
+            <button id="next-page" type="button">Next</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header toolbar">
+            <h2 class="panel-title">Spot map</h2>
+            <div class="filters" role="group" aria-label="Filter spots">
+              <button class="filter active" type="button" data-filter="all">All</button>
+              <button class="filter" type="button" data-filter="compact">Compact</button>
+              <button class="filter" type="button" data-filter="standard">Standard</button>
+              <button class="filter" type="button" data-filter="ev">EV</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="spot-grid" id="spot-grid"><p class="loading">Loading spots...</p></div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const API = "https://improved-succotash-7v4j4xg4xxqx2995-8000.app.github.dev";
+    const token = localStorage.getItem("token");
+    const username = localStorage.getItem("username") || "Attendant";
+    const pageSize = 10;
+    let currentSkip = 0;
+    let currentSearch = "";
+    let currentSort = "checked_in_at";
+    let allSpots = [];
+    let currentSpotFilter = "all";
+
+    if (!token) {
+      window.location.href = "login.html";
+    }
+
+    async function api(path, options = {}) {
+      const headers = {
+        "Content-Type": "application/json",
+        ...(options.headers || {}),
+        Authorization: `Bearer ${localStorage.getItem("token") || ""}`
+      };
+      const response = await fetch(`${API}${path}`, { ...options, headers });
+      if (response.status === 401) {
+        localStorage.clear();
+        window.location.href = "login.html";
+        throw new Error("Your session has expired.");
+      }
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(payload.detail || "Something went wrong. Please try again.");
+      }
+      return payload;
+    }
+
+    document.getElementById("username").textContent = username;
+
+    function showMessage(element, text, success = false) {
+      element.textContent = text;
+      element.classList.toggle("success", success);
+    }
+
+    function formatDate(value) {
+      return new Date(value).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+    }
+
+    function durationFrom(value) {
+      const elapsed = Math.max(0, Date.now() - new Date(value).getTime());
+      const totalMinutes = Math.floor(elapsed / 60000);
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      return hours ? `${hours}h ${minutes}m` : `${minutes}m`;
+    }
+
+    async function refreshStats() {
+      const [spots, evSpots] = await Promise.all([
+        api("/spots?limit=100"),
+        api("/spots/ev/available")
+      ]);
+      const total = spots.total;
+      const occupied = spots.data.filter((spot) => spot.is_occupied).length;
+      document.getElementById("total-spots").textContent = total;
+      document.getElementById("occupied-spots").textContent = occupied;
+      document.getElementById("free-spots").textContent = total - occupied;
+      document.getElementById("free-ev-spots").textContent = evSpots.available_ev_spots;
+    }
+
+    async function loadAvailableSpots() {
+      const vehicleType = document.getElementById("vehicle-type").value;
+      const query = vehicleType === "ev" ? "&spot_type=ev" : "";
+      const result = await api(`/spots?is_occupied=false&limit=100${query}`);
+      const select = document.getElementById("spot-id");
+      select.innerHTML = "";
+      if (!result.data.length) {
+        select.innerHTML = "<option value=\"\">No available spots</option>";
+        return;
+      }
+      result.data.forEach((spot) => {
+        const option = document.createElement("option");
+        option.value = spot.id;
+        option.textContent = `${spot.spot_number} · Floor ${spot.floor_level} · ${spot.spot_type}`;
+        select.appendChild(option);
+      });
+    }
+
+    function renderSessions(result) {
+      const body = document.getElementById("sessions-body");
+      body.innerHTML = "";
+      if (!result.data.length) {
+        body.innerHTML = '<tr><td class="empty" colspan="7">No active sessions found.</td></tr>';
+      } else {
+        result.data.forEach((session) => {
+          const spot = session.spot || allSpots.find((item) => item.id === session.spot_id);
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td class="plate"></td>
+            <td>${spot ? spot.spot_number : session.spot_id}</td>
+            <td>${spot ? spot.floor_level : "-"}</td>
+            <td class="type">${session.vehicle_type}</td>
+            <td>${formatDate(session.checked_in_at)}</td>
+            <td>${durationFrom(session.checked_in_at)}</td>
+            <td><button class="checkout" type="button" data-session-id="${session.id}">Check out</button></td>
+          `;
+          row.querySelector(".plate").textContent = session.plate_number;
+          body.appendChild(row);
+        });
+      }
+      const page = Math.floor(currentSkip / pageSize) + 1;
+      const pages = Math.max(1, Math.ceil(result.total / pageSize));
+      document.getElementById("page-label").textContent = `Page ${page} of ${pages}`;
+      document.getElementById("previous-page").disabled = currentSkip === 0;
+      document.getElementById("next-page").disabled = currentSkip + pageSize >= result.total;
+    }
+
+    async function refreshSessions() {
+      const query = new URLSearchParams({
+        skip: currentSkip,
+        limit: pageSize,
+        sort_by: currentSort,
+        order: currentSort === "plate_number" ? "asc" : "desc"
+      });
+      const result = currentSearch
+        ? await api(`/search?plate=${encodeURIComponent(currentSearch)}`)
+        : await api(`/sessions?${query}`);
+      if (currentSearch) {
+        renderSessions({ data: result, total: result.length, skip: 0, limit: pageSize });
+      } else {
+        renderSessions(result);
+      }
+    }
+
+    function renderSpots() {
+      const grid = document.getElementById("spot-grid");
+      const filtered = currentSpotFilter === "all"
+        ? allSpots
+        : allSpots.filter((spot) => spot.spot_type === currentSpotFilter);
+      grid.innerHTML = "";
+      if (!filtered.length) {
+        grid.innerHTML = '<p class="loading">No spots match this filter.</p>';
+        return;
+      }
+      filtered.forEach((spot) => {
+        const card = document.createElement("article");
+        const state = spot.is_occupied ? "occupied" : "free";
+        const kind = spot.spot_type === "ev" ? "ev" : "standard";
+        card.className = `spot-card ${state}-${kind}`;
+        card.innerHTML = `<span class="spot-number"></span><span class="spot-meta">Floor ${spot.floor_level} · ${spot.spot_type} · ${state}</span>`;
+        card.querySelector(".spot-number").textContent = spot.spot_number;
+        grid.appendChild(card);
+      });
+    }
+
+    async function refreshGrid() {
+      const result = await api("/spots?limit=100");
+      allSpots = result.data;
+      renderSpots();
+    }
+
+    async function refreshAll() {
+      try {
+        await refreshGrid();
+        await Promise.all([refreshStats(), refreshSessions(), loadAvailableSpots()]);
+      } catch (error) {
+        const checkinMessage = document.getElementById("checkin-message");
+        showMessage(checkinMessage, error.message);
+      }
+    }
+
+    document.getElementById("vehicle-type").addEventListener("change", loadAvailableSpots);
+
+    document.getElementById("checkin-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const form = new FormData(event.target);
+      const button = event.target.querySelector("button");
+      button.disabled = true;
+      try {
+        await api("/checkin", {
+          method: "POST",
+          body: JSON.stringify({
+            plate_number: form.get("plate_number"),
+            vehicle_type: form.get("vehicle_type"),
+            spot_id: Number(form.get("spot_id"))
+          })
+        });
+        event.target.reset();
+        showMessage(document.getElementById("checkin-message"), "Vehicle checked in successfully.", true);
+        await refreshAll();
+      } catch (error) {
+        showMessage(document.getElementById("checkin-message"), error.message);
+      } finally {
+        button.disabled = false;
+      }
+    });
+
+    document.getElementById("sessions-body").addEventListener("click", async (event) => {
+      const button = event.target.closest("[data-session-id]");
+      if (!button) return;
+      button.disabled = true;
+      try {
+        const result = await api(`/checkout/${button.dataset.sessionId}`, { method: "POST" });
+        window.alert(`Vehicle checked out. Fee charged: $${Number(result.fee_charged).toFixed(2)}`);
+        await refreshAll();
+      } catch (error) {
+        window.alert(error.message);
+        button.disabled = false;
+      }
+    });
+
+    document.getElementById("search").addEventListener("input", (event) => {
+      currentSearch = event.target.value.trim();
+      currentSkip = 0;
+      refreshSessions().catch((error) => showMessage(document.getElementById("checkin-message"), error.message));
+    });
+
+    document.getElementById("sort").addEventListener("change", (event) => {
+      currentSort = event.target.value;
+      currentSkip = 0;
+      refreshSessions().catch((error) => showMessage(document.getElementById("checkin-message"), error.message));
+    });
+
+    document.getElementById("previous-page").addEventListener("click", () => {
+      currentSkip = Math.max(0, currentSkip - pageSize);
+      refreshSessions();
+    });
+
+    document.getElementById("next-page").addEventListener("click", () => {
+      currentSkip += pageSize;
+      refreshSessions();
+    });
+
+    document.querySelectorAll("[data-filter]").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-filter]").forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        currentSpotFilter = button.dataset.filter;
+        renderSpots();
+      });
+    });
+
+    document.getElementById("logout").addEventListener("click", () => {
+      localStorage.clear();
+      window.location.href = "login.html";
+    });
+
+    refreshAll();
+    window.setInterval(refreshAll, 30000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ParkSmart makes modern garage operations simple, visible, and accurate.">
+  <title>ParkSmart | Smart parking for modern garages</title>
+  <style>
+    :root {
+      --navy: #0f172a;
+      --navy-soft: #17233d;
+      --navy-light: #223250;
+      --orange: #f97316;
+      --orange-bright: #fb923c;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --subtle: #cbd5e1;
+      --border: rgba(148, 163, 184, 0.18);
+      --green: #4ade80;
+      --blue: #38bdf8;
+      --purple: #a78bfa;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 85% 4%, rgba(249, 115, 22, .16), transparent 25%),
+        radial-gradient(circle at 10% 42%, rgba(56, 189, 248, .08), transparent 24%),
+        linear-gradient(145deg, #0f172a 0%, #111c34 58%, #0b1120 100%);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(1160px, calc(100% - 48px)); margin: 0 auto; }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(148, 163, 184, .13);
+      background: rgba(15, 23, 42, .82);
+      backdrop-filter: blur(16px);
+    }
+    .nav-inner { min-height: 74px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { display: flex; align-items: center; gap: 11px; font-size: 20px; font-weight: 800; letter-spacing: .02em; }
+    .brand-mark {
+      width: 35px;
+      height: 35px;
+      display: grid;
+      place-items: center;
+      border-radius: 9px;
+      color: var(--navy);
+      font-weight: 900;
+      background: var(--orange);
+    }
+    .nav-links { display: flex; align-items: center; gap: 26px; color: var(--muted); font-size: 13px; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { padding: 9px 14px; border: 1px solid rgba(249, 115, 22, .6); border-radius: 7px; color: var(--orange-bright); }
+    .nav-cta:hover { color: var(--navy); background: var(--orange); }
+
+    .hero { overflow: hidden; padding: 92px 0 78px; }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; gap: 70px; }
+    .eyebrow { margin: 0 0 15px; color: var(--orange-bright); font-size: 12px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    h1 { max-width: 680px; margin: 0; font-size: clamp(42px, 7vw, 76px); line-height: .98; letter-spacing: -.04em; }
+    .hero-copy { max-width: 540px; margin: 24px 0 31px; color: var(--subtle); font-size: 18px; line-height: 1.65; }
+    .button { display: inline-flex; align-items: center; justify-content: center; padding: 14px 20px; border-radius: 8px; font-size: 14px; font-weight: 800; }
+    .button-primary { color: var(--navy); background: var(--orange); box-shadow: 0 12px 28px rgba(249, 115, 22, .2); }
+    .button-primary:hover { background: var(--orange-bright); transform: translateY(-1px); }
+    .button-quiet { margin-left: 12px; color: var(--subtle); border: 1px solid var(--border); }
+    .button-quiet:hover { border-color: var(--orange); color: var(--text); }
+
+    .garage-visual { position: relative; min-height: 350px; display: grid; place-items: center; }
+    .visual-frame {
+      position: relative;
+      width: min(100%, 430px);
+      min-height: 330px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(23, 35, 61, .76);
+      box-shadow: 0 28px 70px rgba(2, 6, 23, .35);
+      transform: rotate(2deg);
+    }
+    .visual-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; color: var(--muted); font-size: 12px; }
+    .live { display: inline-flex; align-items: center; gap: 7px; color: var(--green); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+    .live::before { width: 7px; height: 7px; content: ""; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 5px rgba(74, 222, 128, .12); }
+    .mini-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 21px; }
+    .mini-stat { padding: 11px; border: 1px solid var(--border); border-radius: 8px; background: rgba(15, 23, 42, .55); }
+    .mini-stat strong { display: block; font-size: 22px; }
+    .mini-stat span { color: var(--muted); font-size: 10px; }
+    .parking-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; padding: 13px; border-radius: 10px; background: rgba(15, 23, 42, .65); }
+    .bay { aspect-ratio: .74; display: grid; place-items: center; border: 1px solid rgba(74, 222, 128, .4); border-radius: 5px; color: var(--green); font-size: 11px; background: rgba(34, 197, 94, .12); }
+    .bay:nth-child(3n) { border-color: rgba(249, 115, 22, .55); color: var(--orange-bright); background: rgba(249, 115, 22, .13); }
+    .bay:nth-child(5n) { border-color: rgba(56, 189, 248, .5); color: var(--blue); background: rgba(56, 189, 248, .13); }
+    .visual-tag { position: absolute; right: -18px; bottom: 25px; padding: 13px 15px; border: 1px solid rgba(249, 115, 22, .45); border-radius: 9px; color: var(--navy); font-size: 12px; font-weight: 900; background: var(--orange); transform: rotate(-4deg); }
+
+    .section { padding: 82px 0; border-top: 1px solid rgba(148, 163, 184, .1); }
+    .section-heading { max-width: 620px; margin-bottom: 36px; }
+    .section-heading h2 { margin: 0; font-size: clamp(28px, 4vw, 43px); letter-spacing: -.03em; }
+    .section-heading p { margin: 13px 0 0; color: var(--muted); line-height: 1.65; }
+    .intro-band { display: grid; grid-template-columns: .8fr 1.2fr; gap: 70px; align-items: start; }
+    .intro-band .section-heading { margin-bottom: 0; }
+    .intro-copy { margin: 0; color: var(--subtle); font-size: 17px; line-height: 1.8; }
+
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .feature { min-height: 190px; padding: 23px; border: 1px solid var(--border); border-radius: 11px; background: rgba(23, 35, 61, .62); transition: border-color 160ms ease, transform 160ms ease; }
+    .feature:hover { border-color: rgba(249, 115, 22, .55); transform: translateY(-3px); }
+    .feature-icon { font-size: 27px; }
+    .feature h3 { margin: 18px 0 9px; font-size: 16px; }
+    .feature p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+    .audience-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .audience { padding: 24px 20px; border-left: 3px solid var(--orange); background: rgba(23, 35, 61, .55); }
+    .audience strong { display: block; font-size: 16px; }
+    .audience span { display: block; margin-top: 7px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+
+    .helps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .help { padding: 26px; border: 1px solid var(--border); border-radius: 11px; background: linear-gradient(145deg, rgba(34, 50, 80, .72), rgba(23, 35, 61, .58)); }
+    .help-number { color: var(--orange-bright); font-size: 13px; font-weight: 900; letter-spacing: .12em; }
+    .help h3 { margin: 20px 0 10px; font-size: 18px; }
+    .help p { margin: 0; color: var(--muted); line-height: 1.65; font-size: 13px; }
+
+    .roadmap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .roadmap-item { position: relative; padding: 23px; border: 1px dashed rgba(249, 115, 22, .45); border-radius: 11px; background: rgba(15, 23, 42, .35); }
+    .roadmap-item::before { width: 8px; height: 8px; position: absolute; top: 24px; right: 24px; content: ""; border-radius: 50%; background: var(--orange); }
+    .roadmap-item h3 { margin: 0 0 10px; font-size: 16px; }
+    .roadmap-item p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+    footer { padding: 31px 0 38px; border-top: 1px solid rgba(148, 163, 184, .1); color: var(--muted); font-size: 12px; }
+    .footer-inner { display: flex; justify-content: space-between; gap: 20px; }
+    .footer-inner p { margin: 0; }
+
+    @media (max-width: 850px) {
+      .hero-grid, .intro-band { grid-template-columns: 1fr; gap: 40px; }
+      .hero { padding-top: 64px; }
+      .garage-visual { min-height: 320px; }
+      .features { grid-template-columns: repeat(2, 1fr); }
+      .audience-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .container { width: min(100% - 32px, 1160px); }
+      .nav-links a:not(.nav-cta) { display: none; }
+      .nav-links { gap: 0; }
+      .hero { padding: 54px 0 58px; }
+      .hero-copy { font-size: 16px; }
+      .button { width: 100%; }
+      .button-quiet { margin: 10px 0 0; }
+      .features, .helps, .roadmap { grid-template-columns: 1fr; }
+      .audience-grid { grid-template-columns: 1fr 1fr; }
+      .section { padding: 62px 0; }
+      .visual-frame { transform: none; }
+      .visual-tag { right: 10px; }
+      .footer-inner { display: block; }
+      .footer-inner p + p { margin-top: 9px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="index.html"><span class="brand-mark">P</span>ParkSmart</a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#audiences">Built for garages</a>
+        <a class="nav-cta" href="login.html">Sign in</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <p class="eyebrow">Garage operations, made clear</p>
+          <h1>Smart parking for modern garages</h1>
+          <p class="hero-copy">ParkSmart gives attendants a calm, accurate way to manage every arrival, departure, fee, and available spot across the whole garage.</p>
+          <a class="button button-primary" href="login.html">Get started</a>
+          <a class="button button-quiet" href="#features">See how it works</a>
+        </div>
+        <div class="garage-visual" aria-label="Illustration of a live parking garage dashboard">
+          <div class="visual-frame">
+            <div class="visual-top"><span>Garage overview · All floors</span><span class="live">Live now</span></div>
+            <div class="mini-stats">
+              <div class="mini-stat"><strong>34</strong><span>Total spots</span></div>
+              <div class="mini-stat"><strong>21</strong><span>Free today</span></div>
+              <div class="mini-stat"><strong>06</strong><span>EV ready</span></div>
+            </div>
+            <div class="parking-grid" aria-hidden="true">
+              <span class="bay">101</span><span class="bay">102</span><span class="bay">103</span><span class="bay">104</span><span class="bay">105</span><span class="bay">106</span>
+              <span class="bay">201</span><span class="bay">202</span><span class="bay">203</span><span class="bay">204</span><span class="bay">205</span><span class="bay">206</span>
+              <span class="bay">301</span><span class="bay">302</span><span class="bay">303</span><span class="bay">304</span><span class="bay">305</span><span class="bay">306</span>
+            </div>
+            <span class="visual-tag">No double-parking</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="what-it-is">
+      <div class="container intro-band">
+        <div class="section-heading">
+          <p class="eyebrow">One clear view</p>
+          <h2>The operating layer for busy parking teams.</h2>
+        </div>
+        <p class="intro-copy">ParkSmart turns the attendant’s daily log into a live operating picture. Track capacity by floor, place every vehicle in the right spot, and calculate fair fees without mental math or paper trails. It is built for the pace of a real garage: quick to learn, fast to use, and ready when the queue arrives.</p>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Everything in view</p>
+          <h2>Less hunting. More certainty.</h2>
+          <p>The tools attendants need to make confident decisions in the moment.</p>
+        </div>
+        <div class="features">
+          <article class="feature"><span class="feature-icon">🟢</span><h3>Real-time availability</h3><p>See open and occupied spots at a glance before the next car reaches the gate.</p></article>
+          <article class="feature"><span class="feature-icon">⚡</span><h3>EV spot management</h3><p>Keep charger-equipped spaces visible and make sure EVs land where they belong.</p></article>
+          <article class="feature"><span class="feature-icon">🧾</span><h3>Fair, tiered fees</h3><p>Apply hourly pricing, round up part-hours, and respect the daily cap automatically.</p></article>
+          <article class="feature"><span class="feature-icon">🔎</span><h3>License plate search</h3><p>Find an active vehicle quickly, even when the day’s session log gets long.</p></article>
+          <article class="feature"><span class="feature-icon">📚</span><h3>Session history</h3><p>Move through active records with pagination and sorting built for scanning.</p></article>
+          <article class="feature"><span class="feature-icon">🏢</span><h3>Multi-floor support</h3><p>Represent the whole facility, from compact bays on one floor to EVs on another.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="audiences">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Made for movement</p>
+          <h2>Useful anywhere cars gather.</h2>
+        </div>
+        <div class="audience-grid">
+          <div class="audience"><strong>Garages</strong><span>Keep attendants and capacity in sync across every level.</span></div>
+          <div class="audience"><strong>Airports</strong><span>Handle high-volume arrivals with a dependable live view.</span></div>
+          <div class="audience"><strong>Malls</strong><span>Make peak shopping hours easier to coordinate.</span></div>
+          <div class="audience"><strong>Hospitals</strong><span>Reduce uncertainty when every minute at the entrance matters.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how-it-helps">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">The daily difference</p>
+          <h2>Three sources of friction, removed.</h2>
+        </div>
+        <div class="helps">
+          <article class="help"><span class="help-number">01 / CAPACITY</span><h3>Stop guessing what is free.</h3><p>A live spot view replaces radio calls, paper maps, and the slow walk to check another floor.</p></article>
+          <article class="help"><span class="help-number">02 / BILLING</span><h3>Stop doing fee math at the gate.</h3><p>Tiered rates, part-hour rounding, EV charging, and the daily cap are handled consistently.</p></article>
+          <article class="help"><span class="help-number">03 / RETRIEVAL</span><h3>Stop losing cars in the log.</h3><p>Search by plate and move through active sessions without scanning a giant handwritten list.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="coming-soon">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">On the horizon</p>
+          <h2>The garage keeps getting smarter.</h2>
+        </div>
+        <div class="roadmap">
+          <article class="roadmap-item"><h3>Mobile app for drivers</h3><p>Give drivers a clearer way to find availability and keep their parking details close.</p></article>
+          <article class="roadmap-item"><h3>Monthly subscription passes</h3><p>Make recurring access simpler for commuters, tenants, and regular visitors.</p></article>
+          <article class="roadmap-item"><h3>Automatic plate recognition</h3><p>Reduce manual entry at the gate with camera-assisted vehicle identification.</p></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <p><strong>ParkSmart</strong> · Smart parking for modern garages</p>
+      <p>Built for clearer operations, one spot at a time.</p>
+    </div>
+  </footer>
+</body>
+</html>
