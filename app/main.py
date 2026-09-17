@@ -2,10 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes.auth import router as auth_router
+from app.api.routes.clock import router as clock_router
 from app.api.routes.health import router as health_router
+from app.api.routes.rates import router as rates_router
 from app.api.routes.sessions import router as sessions_router
 from app.api.routes.spots import router as spots_router
 from app.db import create_tables
+from app.scheduler import start_scheduler, stop_scheduler
 
 app = FastAPI(title="Garage Parking System")
 app.add_middleware(
@@ -20,9 +23,17 @@ app.add_middleware(
 @app.on_event("startup")
 def startup() -> None:
 	create_tables()
+	start_scheduler()
+
+
+@app.on_event("shutdown")
+def shutdown() -> None:
+	stop_scheduler()
 
 
 app.include_router(health_router)
 app.include_router(auth_router)
+app.include_router(clock_router)
 app.include_router(spots_router)
 app.include_router(sessions_router)
+app.include_router(rates_router)

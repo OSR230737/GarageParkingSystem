@@ -9,11 +9,13 @@ from app.auth import get_current_user
 from app.db import get_db
 from app.fees import calculate_fee
 from app.models import ParkingSession, ParkingSpot, User
+from app.rate_card import get_active_rate_card
 from app.schemas import (
     CheckInRequest,
     CheckoutResponse,
     ParkingSessionListResponse,
     ParkingSessionResponse,
+    TransferRequest,
 )
 
 router = APIRouter(tags=["sessions"])
@@ -99,6 +101,7 @@ def check_out(
         checked_out_at,
         parking_session.spot.spot_type,
         parking_session.vehicle_type,
+        get_active_rate_card(),
     )
     parking_session.checked_out_at = checked_out_at
     parking_session.fee_charged = fee_charged
@@ -113,6 +116,40 @@ def check_out(
         "checked_out_at": checked_out_at,
         "duration_hours": duration_hours,
     }
+
+
+@router.post("/sessions/{session_id}/transfer", response_model=ParkingSessionResponse)
+def transfer_session(
+    session_id: int,
+    transfer_data: TransferRequest,
+    db: Session = Depends(get_db),
+    _: User = Depends(get_current_user),
+) -> ParkingSession:
+    parking_session = db.get(ParkingSession, session_id)
+    if parking_session is None:
+        raise HTTPException(status_code=404, detail="Parking session not found")
+    if parking_session.checked_out_at is not None:
+        raise HTTPException(status_code=400, detail="Session is already checked out")
+    if parking_session.plate_number == transfer_data.plate_number:
+        raise HTTPException(status_code=400, detail="New plate must be different")
+
+    active_session = db.scalar(
+        select(ParkingSession).where(
+            ParkingSession.plate_number == transfer_data.plate_number,
+            ParkingSession.checked_out_at.is_(None),
+            ParkingSession.id != session_id,
+        )
+    )
+    if active_session is not None:
+        raise HTTPException(
+            status_code=400,
+            detail="New plate already has an active session",
+        )
+
+    parking_session.plate_number = transfer_data.plate_number
+    db.commit()
+    db.refresh(parking_session)
+    return parking_session
 
 
 @router.get("/sessions", response_model=ParkingSessionListResponse)

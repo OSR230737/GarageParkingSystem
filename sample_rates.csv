@@ -1,0 +1,10 @@
+ Spot Type , First Hour , Additional Hour , Daily Cap , EV Surcharge 
+ STANDARD , $6.00 , $3.50 , $25.00 , $0.00
+ standard , $7.00 , $4.00 , $30.00 , $0.00
+COMPACT,$5.50,$3.00,$22.00,$0.00
+ Ev , $8.00 , $4.00 , $28.00 , $2.50
+compact,not-a-price,$3.00,$22.00,$0.00
+motorcycle,$3.00,$2.00,$15.00,$0.00
+, $5.00 , $3.00 , $20.00 , $0.00
+EV,$8.00,$4.00,$28.00,$2.50
+standard,$6.00,$3.50,$25.00,$oops

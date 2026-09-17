@@ -57,6 +57,10 @@ class CheckInRequest(BaseModel):
     spot_id: int
 
 
+class TransferRequest(BaseModel):
+    plate_number: str = Field(min_length=1)
+
+
 class ParkingSessionResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

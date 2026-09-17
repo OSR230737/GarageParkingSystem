@@ -1,20 +1,29 @@
 from datetime import datetime, timedelta
 from math import ceil
 
+DEFAULT_RATE = {
+    "first_hour": 5.00,
+    "additional_hour": 3.00,
+    "daily_cap": 20.00,
+    "ev_surcharge": 2.00,
+}
+
 
 def calculate_fee(
     checked_in_at: datetime,
     checked_out_at: datetime,
     spot_type: str,
     vehicle_type: str,
+    rate_card: dict[str, dict[str, float]] | None = None,
 ) -> float:
     hours = max(1, ceil((checked_out_at - checked_in_at).total_seconds() / 3600))
-    fee = 5.00 + (hours - 1) * 3.00
+    rates = (rate_card or {}).get(spot_type.lower(), DEFAULT_RATE)
+    fee = rates["first_hour"] + (hours - 1) * rates["additional_hour"]
 
-    if spot_type == "ev" and vehicle_type == "ev":
-        fee += hours * 2.00
+    if spot_type.lower() == "ev" and vehicle_type.lower() == "ev":
+        fee += hours * rates["ev_surcharge"]
 
-    return float(min(fee, 20.00))
+    return float(min(fee, rates["daily_cap"]))
 
 
 if __name__ == "__main__":
