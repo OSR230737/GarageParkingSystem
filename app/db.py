@@ -19,3 +19,9 @@ def get_db() -> Generator[Session, None, None]:
         yield db
     finally:
         db.close()
+
+
+def create_tables() -> None:
+    from app import models
+
+    Base.metadata.create_all(bind=engine)

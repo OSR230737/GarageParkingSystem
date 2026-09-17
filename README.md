@@ -49,9 +49,39 @@ The interactive API documentation is available at http://localhost:8000/docs.
 ```text
 app/
   api/routes/  HTTP route handlers
+   auth.py      Password hashing and JWT authentication
   config.py    Environment configuration
   db.py        SQLAlchemy engine, sessions, and model base
+   fees.py      Parking fee calculation
   main.py      FastAPI application entry point
+   models.py    User, parking spot, and parking session models
+   schemas.py   API request and response schemas
 docker-compose.yml
 requirements.txt
-```# GarageParkingSystem
+```
+
+## API workflow
+
+Tables are created automatically when the API starts. Register an attendant and
+log in to receive a bearer token:
+
+```bash
+curl -X POST http://localhost:8000/auth/register \
+   -H 'Content-Type: application/json' \
+   -d '{"username":"attendant","email":"attendant@example.com","password":"password123"}'
+
+curl -X POST http://localhost:8000/auth/login \
+   -H 'Content-Type: application/json' \
+   -d '{"username":"attendant","password":"password123"}'
+```
+
+Authenticated endpoints support creating spots, listing available spots,
+checking vehicles in and out, and finding an active session by plate:
+
+- `POST /spots`
+- `GET /spots?spot_type=ev&is_occupied=false&skip=0&limit=10`
+- `GET /spots/ev/available`
+- `POST /checkin`
+- `POST /checkout/{session_id}`
+- `GET /sessions`
+- `GET /search?plate=XX`
